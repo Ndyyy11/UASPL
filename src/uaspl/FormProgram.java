@@ -403,9 +403,12 @@ private TableRowSorter <TableModel> rowSorter ;
         }
         int [] data = Sorting.getas(hasil, nlist.size());
         ListManage lm = new ListManage(sortlist);
+        System.out.println("Hasil Sort Desimal : ");
         for(int i=0; i<nlist.size(); i++){
             lm.addItem(data [i]);
+            System.out.println(data [i]);
         }
+        
     }//GEN-LAST:event_sortActionPerformed
 
     /**
