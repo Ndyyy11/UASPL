@@ -5,9 +5,17 @@
  */
 package uaspl;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import javax.swing.RowFilter;
 
 /**
  *
@@ -18,10 +26,70 @@ public class FormProgram extends javax.swing.JFrame {
     /**
      * Creates new form FormProgram
      */
+private List<Object[]> nlist = new ArrayList<>();
+private TableRowSorter <TableModel> rowSorter ;
     public FormProgram() {
         initComponents();
+    System.out.println("==================================================");
+    System.out.println("=== Selamat Di Program Converter by Andy Huang ===");
+    System.out.println("==================================================");
+    System.out.println("Anda Memasukan Data : " + InputAngka.getText());
         ImageIcon imageIcon = new ImageIcon("res/logo.png");
         setIconImage(imageIcon.getImage());
+        rowSorter = new TableRowSorter<>(tableout.getModel());
+        tableout.setRowSorter(rowSorter);
+        InSearch.getDocument().addDocumentListener(new DocumentListener(){
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String text = InSearch.getText();
+
+                if (text.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                    for (int i = 0; i < nlist.size(); i++){
+                        if (nlist.get(i)[0].toString().matches("(?i)" + text)){
+                            System.out.println(
+                                            "\nHasil Dari Pencarian Anda : " +
+                                            "\nDecimal : " + nlist.get(i)[0].toString() +
+                                            "\nBiner : " + nlist.get(i)[1].toString() +
+                                            "\nOctal : " + nlist.get(i)[2].toString() +
+                                            "\nHexadecimal : " + nlist.get(i)[3].toString() 
+                );
+            }
+        }
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                String text = InSearch.getText();
+
+                if (text.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                    for (int i = 0; i < nlist.size(); i++){
+                        if (nlist.get(i)[0].toString().matches("(?i)" + text)){
+                            System.out.println(
+                                            "\nHasil Dari Pencarian Anda : " +
+                                            "\nDecimal : " + nlist.get(i)[0].toString() +
+                                            "\nBiner : " + nlist.get(i)[1].toString() +
+                                            "\nOctal : " + nlist.get(i)[2].toString() +
+                                            "\nHexadecimal : " + nlist.get(i)[3].toString() 
+                );
+            }
+        }
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+        });
     }
 
     /**
@@ -46,6 +114,11 @@ public class FormProgram extends javax.swing.JFrame {
         optoct = new javax.swing.JRadioButton();
         opthex = new javax.swing.JRadioButton();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        InSearch = new javax.swing.JTextField();
+        sort = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        sortlist = new javax.swing.JList<>();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -82,7 +155,7 @@ public class FormProgram extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Long.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Long.class, java.lang.Long.class, java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
@@ -128,6 +201,17 @@ public class FormProgram extends javax.swing.JFrame {
 
         jLabel3.setText("Pilih Basis Bilangan ( Number Base) :");
 
+        jLabel4.setText("Masukan Angka yang Ingin di Cari Dalam Decimal :");
+
+        sort.setText("SORTING (Hanya Decimal)");
+        sort.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setViewportView(sortlist);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -135,25 +219,30 @@ public class FormProgram extends javax.swing.JFrame {
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(InSearch, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(InputAngka))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(optdec)
-                                    .addComponent(optbin))
-                                .addGap(56, 56, 56)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(opthex)
-                                    .addComponent(optoct)))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(0, 5, Short.MAX_VALUE)))
+                            .addComponent(optdec)
+                            .addComponent(optbin))
+                        .addGap(56, 56, 56)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(opthex)
+                            .addComponent(optoct)))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(sort)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -176,9 +265,18 @@ public class FormProgram extends javax.swing.JFrame {
                     .addComponent(opthex))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(button)
+                .addGap(2, 2, 2)
+                .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addComponent(InSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(sort)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(40, 40, 40))
         );
 
         pack();
@@ -209,11 +307,14 @@ public class FormProgram extends javax.swing.JFrame {
     }//GEN-LAST:event_opthexActionPerformed
 
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
-    if(InputAngka.getText().isEmpty()){
+
+    System.out.println("Ini Hasil dari Konversi Anda : ");
+        if(InputAngka.getText().isEmpty()){
         JOptionPane.showMessageDialog(this,
                             "Data Input Tidak Boleh Kosong !!! ",
                             "Warning",
                             JOptionPane.WARNING_MESSAGE);
+        System.err.println("Data Input Tidak Boleh Kosong !!!");
          return;
     }
     if (!optdec.isSelected() && !optbin.isSelected() && !optoct.isSelected() && !opthex.isSelected()){
@@ -221,6 +322,7 @@ public class FormProgram extends javax.swing.JFrame {
                             "Pilih Jenis Basis Bilangan Data Tersebut !!! ",
                             "Warning",
                             JOptionPane.WARNING_MESSAGE);
+        System.err.println("Pilih Jenis Basis Bilangan Data Tersebut !!!");
          return;    
         }
         try {
@@ -232,6 +334,12 @@ public class FormProgram extends javax.swing.JFrame {
             list.add(Converter.DecToOct((int) list.get(0)));
             list.add(Converter.DecToHex((int) list.get(0)));
             tm.addRow(new Object[]{list.get(0),list.get(1),list.get(2),list.get(3)});
+            System.out.println("Desimal : "+ list.get(0));
+            System.out.print("Biner : ");
+            Rekursif.DesimalToBiner((int) list.get(0));
+            System.out.println("\nOctal : "+ list.get(2));
+            System.out.println("Hexadesimal : "+ list.get(3));
+            nlist.add (new Object []{list.get(0),list.get(1),list.get(2),list.get(3)});
         }
         if (optbin.isSelected()){
             list.add(Integer.parseInt(InputAngka.getText()));
@@ -239,6 +347,11 @@ public class FormProgram extends javax.swing.JFrame {
             list.add(Converter.BinToOct((int) list.get(0)));
             list.add(Converter.BinToHex((int) list.get(0)));
             tm.addRow(new Object[]{list.get(1),list.get(0),list.get(2),list.get(3)});
+            System.out.println("Desimal : "+ list.get(1));
+            System.out.println("Biner : "+ list.get(0));
+            System.out.println("Octal : "+ list.get(2));
+            System.out.println("Hexadesimal : "+ list.get(3));
+            nlist.add (new Object []{list.get(1),list.get(0),list.get(2),list.get(3)});
         }
         if (optoct.isSelected()){
             list.add(Integer.parseInt(InputAngka.getText()));
@@ -246,6 +359,11 @@ public class FormProgram extends javax.swing.JFrame {
             list.add(Converter.OctToBin((int) list.get(0)));
             list.add(Converter.OctToHex((int) list.get(0)));
             tm.addRow(new Object[]{list.get(1),list.get(2),list.get(0),list.get(3)});
+            System.out.println("Desimal : "+ list.get(1));
+            System.out.println("Biner : "+ list.get(2));
+            System.out.println("Octal : "+ list.get(0));
+            System.out.println("Hexadesimal : "+ list.get(3));
+            nlist.add (new Object []{list.get(1),list.get(2),list.get(0),list.get(3)});
         }
         if (opthex.isSelected()){
             list.add(InputAngka.getText());
@@ -253,12 +371,18 @@ public class FormProgram extends javax.swing.JFrame {
             list.add(Converter.HexToBin((String) list.get(0)));
             list.add(Converter.HexToOct((String) list.get(0)));
             tm.addRow(new Object[]{list.get(1),list.get(2),list.get(3),list.get(0)});
+            System.out.println("Desimal : "+ list.get(1));
+            System.out.println("Biner : "+ list.get(2));
+            System.out.println("Octal : "+ list.get(3));
+            System.out.println("Hexadesimal : "+ list.get(0));
+            nlist.add (new Object []{list.get(1),list.get(2),list.get(3),list.get(0)});
         }
             }catch(NumberFormatException e){
                 JOptionPane.showMessageDialog(this,
-                            "Data Tidak Sesuai Dengan Basis Bilangannya !!!",
+                            "Data Tidak Sesuai Dengan Basis Bilangannya  !!! \nAtau Melebihi Limit Data",
                             "Warning",
                             JOptionPane.WARNING_MESSAGE);
+                System.err.println("Data Tidak Sesuai Dengan Basis Bilangannya  !!! \nAtau Melebihi Limit Data");
             }
         
     }//GEN-LAST:event_buttonActionPerformed
@@ -266,6 +390,23 @@ public class FormProgram extends javax.swing.JFrame {
     private void InputAngkaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InputAngkaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_InputAngkaActionPerformed
+
+    private void sortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortActionPerformed
+        String hasil = "";
+        for(int i=0; i<nlist.size(); i++){
+            if (hasil.equalsIgnoreCase("")){ 
+                hasil=nlist.get(i)[0].toString();
+            }
+            else {
+                hasil=hasil+","+nlist.get(i)[0].toString();
+                    }
+        }
+        int [] data = Sorting.getas(hasil, nlist.size());
+        ListManage lm = new ListManage(sortlist);
+        for(int i=0; i<nlist.size(); i++){
+            lm.addItem(data [i]);
+        }
+    }//GEN-LAST:event_sortActionPerformed
 
     /**
      * @param args the command line arguments
@@ -303,18 +444,23 @@ public class FormProgram extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField InSearch;
     private javax.swing.JTextField InputAngka;
     private javax.swing.JButton button;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JRadioButton optbin;
     private javax.swing.JRadioButton optdec;
     private javax.swing.JRadioButton opthex;
     private javax.swing.JRadioButton optoct;
+    private javax.swing.JButton sort;
+    private javax.swing.JList<String> sortlist;
     private javax.swing.JTable tableout;
     // End of variables declaration//GEN-END:variables
 }
